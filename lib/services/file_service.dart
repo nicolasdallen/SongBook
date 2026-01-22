@@ -49,7 +49,7 @@ class FileService {
       }
 
       // Copie du fichier dans le stockage
-      final fileName = '${songId}_${file.uri.pathSegments.last}';
+      final fileName = '${songId}_${path.basename(file.path)}';
       final storagePath = '$_storageDirectory/$fileName';
       await file.copy(storagePath);
 
