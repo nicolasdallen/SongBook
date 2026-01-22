@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:path/path.dart' as path;
 import '../models/song.dart';
 
 /// Service pour gérer l'importation, la détection et le stockage des partitions
@@ -136,10 +137,11 @@ class FileService {
       final file = File(song.filePath);
       
       // Validation: vérifier que le fichier est dans le répertoire de stockage
-      final storagePath = Directory(_storageDirectory).absolute.path;
-      final filePath = file.absolute.path;
+      final storageDir = Directory(_storageDirectory).absolute;
+      final normalizedStoragePath = path.normalize(storageDir.path);
+      final normalizedFilePath = path.normalize(file.absolute.path);
       
-      if (!filePath.startsWith(storagePath)) {
+      if (!normalizedFilePath.startsWith(normalizedStoragePath)) {
         throw Exception('Tentative de suppression d\'un fichier en dehors du stockage');
       }
       

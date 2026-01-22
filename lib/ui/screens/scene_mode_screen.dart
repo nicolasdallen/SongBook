@@ -211,13 +211,10 @@ class _SceneModeScreenState extends State<SceneModeScreen> {
           });
         },
         onHorizontalDragEnd: (details) {
-          final velocity = details.primaryVelocity;
-          if (velocity != null) {
-            if (velocity > 0) {
-              _previousSong();
-            } else if (velocity < 0) {
-              _nextSong();
-            }
+          if (details.primaryVelocity > 0) {
+            _previousSong();
+          } else if (details.primaryVelocity < 0) {
+            _nextSong();
           }
         },
         child: Center(
