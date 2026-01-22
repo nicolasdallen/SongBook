@@ -34,12 +34,38 @@ class AIService {
       debugPrint('Début de l\'analyse IA pour: ${song.title}');
 
       // Exécution des agents en parallèle pour optimiser le temps
-      final futures = await Future.wait([
-        _analyzeHarmony(song),
-        _analyzeStructure(song),
-        _analyzePerformance(song),
-        _generateSuggestions(song),
-      ]);
+      // Utilisation de eagerError pour capturer les erreurs d'agents individuels
+      final futures = await Future.wait(
+        [
+          _analyzeHarmony(song).catchError((e) {
+            debugPrint('Erreur agent harmonique: $e');
+            return <String, dynamic>{
+              'key': song.key,
+              'chords': <String>[],
+              'confidence': 0.0,
+            };
+          }),
+          _analyzeStructure(song).catchError((e) {
+            debugPrint('Erreur agent structure: $e');
+            return <String, dynamic>{
+              'structure': <String, List<int>>{},
+              'confidence': 0.0,
+            };
+          }),
+          _analyzePerformance(song).catchError((e) {
+            debugPrint('Erreur agent performance: $e');
+            return <String, dynamic>{
+              'tempo': song.tempo,
+              'confidence': 0.0,
+            };
+          }),
+          _generateSuggestions(song).catchError((e) {
+            debugPrint('Erreur agent suggestions: $e');
+            return <Map<String, String>>[];
+          }),
+        ],
+        eagerError: true,
+      );
 
       final harmonyResult = futures[0] as Map<String, dynamic>;
       final structureResult = futures[1] as Map<String, dynamic>;

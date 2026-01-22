@@ -141,7 +141,7 @@ class FileService {
       final normalizedStoragePath = path.normalize(storageDir.path);
       final normalizedFilePath = path.normalize(file.absolute.path);
       
-      if (!normalizedFilePath.startsWith(normalizedStoragePath)) {
+      if (!path.isWithin(normalizedStoragePath, normalizedFilePath)) {
         throw Exception('Tentative de suppression d\'un fichier en dehors du stockage');
       }
       

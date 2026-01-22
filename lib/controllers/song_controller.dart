@@ -261,12 +261,21 @@ class SongController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Ordre de difficulté pour le tri
+  static const Map<String, int> _difficultyOrder = {
+    'easy': 1,
+    'medium': 2,
+    'hard': 3,
+  };
+
+  /// Valeur par défaut pour les difficultés inconnues
+  static const int _defaultDifficultyValue = 2; // medium
+
   /// Tri les partitions par difficulté
   void sortByDifficulty({bool ascending = true}) {
-    final difficultyOrder = {'easy': 1, 'medium': 2, 'hard': 3};
     _songs.sort((a, b) {
-      final aValue = difficultyOrder[a.difficulty] ?? 2;
-      final bValue = difficultyOrder[b.difficulty] ?? 2;
+      final aValue = _difficultyOrder[a.difficulty] ?? _defaultDifficultyValue;
+      final bValue = _difficultyOrder[b.difficulty] ?? _defaultDifficultyValue;
       final comparison = aValue.compareTo(bValue);
       return ascending ? comparison : -comparison;
     });
