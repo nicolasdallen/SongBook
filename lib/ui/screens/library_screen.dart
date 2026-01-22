@@ -343,8 +343,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
               spacing: 8,
               children: difficulties.map((difficulty) {
                 final isSelected = _controller.filterDifficulty == difficulty;
+                final label = _getDifficultyLabel(difficulty);
                 return FilterChip(
-                  label: Text(difficulty),
+                  label: Text(label),
                   selected: isSelected,
                   onSelected: (selected) {
                     _controller.filterByDifficulty(selected ? difficulty : null);
@@ -357,6 +358,19 @@ class _LibraryScreenState extends State<LibraryScreen> {
         );
       },
     );
+  }
+
+  String _getDifficultyLabel(String difficulty) {
+    switch (difficulty.toLowerCase()) {
+      case 'easy':
+        return 'Facile';
+      case 'medium':
+        return 'Moyen';
+      case 'hard':
+        return 'Difficile';
+      default:
+        return difficulty;
+    }
   }
 
   Widget _buildTagFilter() {

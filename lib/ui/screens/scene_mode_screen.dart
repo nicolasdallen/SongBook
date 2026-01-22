@@ -42,11 +42,19 @@ class _SceneModeScreenState extends State<SceneModeScreen> {
 
   void _enableKeepScreenOn() {
     // TODO: Implémenter avec wakelock package
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    try {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    } catch (e) {
+      debugPrint('Erreur lors de l\'activation du mode plein écran: $e');
+    }
   }
 
   void _disableKeepScreenOn() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    try {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    } catch (e) {
+      debugPrint('Erreur lors de la désactivation du mode plein écran: $e');
+    }
   }
 
   @override
@@ -203,10 +211,13 @@ class _SceneModeScreenState extends State<SceneModeScreen> {
           });
         },
         onHorizontalDragEnd: (details) {
-          if (details.primaryVelocity! > 0) {
-            _previousSong();
-          } else if (details.primaryVelocity! < 0) {
-            _nextSong();
+          final velocity = details.primaryVelocity;
+          if (velocity != null) {
+            if (velocity > 0) {
+              _previousSong();
+            } else if (velocity < 0) {
+              _nextSong();
+            }
           }
         },
         child: Center(

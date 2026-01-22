@@ -134,6 +134,15 @@ class FileService {
   Future<void> deleteSheet(Song song) async {
     try {
       final file = File(song.filePath);
+      
+      // Validation: vérifier que le fichier est dans le répertoire de stockage
+      final storagePath = Directory(_storageDirectory).absolute.path;
+      final filePath = file.absolute.path;
+      
+      if (!filePath.startsWith(storagePath)) {
+        throw Exception('Tentative de suppression d\'un fichier en dehors du stockage');
+      }
+      
       if (await file.exists()) {
         await file.delete();
         debugPrint('Partition supprimée: ${song.title}');

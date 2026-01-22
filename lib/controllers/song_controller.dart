@@ -132,24 +132,34 @@ class SongController extends ChangeNotifier {
 
   /// Supprime une partition de la collection
   Future<void> deleteSong(String songId) async {
-    final song = _songs.firstWhere((s) => s.id == songId);
-    
-    // Supprime le fichier
-    await _fileService.deleteSheet(song);
-    
-    // Supprime de la liste
-    _songs.removeWhere((s) => s.id == songId);
-    
-    // Supprime les annotations associées
-    _annotations.remove(songId);
-    
-    // Désélectionne si c'était la partition sélectionnée
-    if (_selectedSong?.id == songId) {
-      _selectedSong = null;
+    try {
+      final songIndex = _songs.indexWhere((s) => s.id == songId);
+      if (songIndex == -1) {
+        throw Exception('Partition non trouvée: $songId');
+      }
+      
+      final song = _songs[songIndex];
+      
+      // Supprime le fichier
+      await _fileService.deleteSheet(song);
+      
+      // Supprime de la liste
+      _songs.removeAt(songIndex);
+      
+      // Supprime les annotations associées
+      _annotations.remove(songId);
+      
+      // Désélectionne si c'était la partition sélectionnée
+      if (_selectedSong?.id == songId) {
+        _selectedSong = null;
+      }
+      
+      notifyListeners();
+      debugPrint('Partition supprimée: ${song.title}');
+    } catch (e) {
+      debugPrint('Erreur lors de la suppression de la partition: $e');
+      rethrow;
     }
-    
-    notifyListeners();
-    debugPrint('Partition supprimée: ${song.title}');
   }
 
   /// Met à jour une partition
